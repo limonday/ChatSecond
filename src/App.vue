@@ -1,32 +1,55 @@
 <template>
   <div id="app">
     <Container>
-      <ChatMessage>sddsfdsf</ChatMessage>
-      Hello, world
+      <ChatWindow>
+        <ChatMessage 
+          v-for="(message, i) in messages" 
+          v-bind:key="i"
+          
+          v-bind:username="message.author" 
+          v-bind:datetime="message.datetime" 
+        >
+          {{message.text}}
+        </ChatMessage>
+      </ChatWindow>
     </Container>
   </div>
 </template>
 
 <script>
-import ChatMessage from './components/ChatMessage.vue'
-import Container from './components/Container.vue'
+import ChatMessage from "./components/ChatMessage.vue";
+import Container from "./components/Container.vue";
+import ChatWindow from "./components/ChatWindow";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Container,
-    ChatMessage
+    ChatMessage,
+    ChatWindow,
+  },
+  data() {
+    return {
+      messages: []
+    }
+  },
+  methods: {
+    getMessages(){
+      this.axios.get('http://37.77.104.246/api/chat/getmessages.php')
+        .then( (resp)=>{
+          this.messages = resp.data
+        } )
+    }
+  },
+  mounted(){
+    this.getMessages();
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body {
+  margin: 0;
+  background-color: #f9f9fa;
 }
 </style>
